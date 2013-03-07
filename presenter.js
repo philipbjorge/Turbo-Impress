@@ -1,0 +1,1 @@
+var presenter_init = {};

@@ -459,7 +459,9 @@
         // with a transition `duration` optionally given as second parameter.
         var goto = function ( el, duration ) {
             
-            if ( !initialized || !(el = getStep(el)) ) {
+            if ( !initialized || !(el = getStep(el)) || 
+                ((typeof(editor.isFocused) === "function" && editor.isFocused()) ||
+                 (document.querySelectorAll('.jqconsole-blurred').length === 0))) {
                 // presentation not initialized or given element is not a step
                 return false;
             }
@@ -689,9 +691,12 @@
         
         // Prevent default keydown action when one of supported key is pressed.
         document.addEventListener("keydown", function ( event ) {
+            /*
+                Disabled to keep impress from stopping key input in the repl or editor
             if ( event.keyCode === 9 || ( event.keyCode >= 32 && event.keyCode <= 34 ) || (event.keyCode >= 37 && event.keyCode <= 40) ) {
                 event.preventDefault();
             }
+             */
         }, false);
         
         // Trigger impress action (next or prev) on keyup.

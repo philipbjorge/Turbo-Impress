@@ -5,6 +5,7 @@
 		<link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
 		<link href="css/impress-demo.css" rel="stylesheet" />
 		<link href="css/layout-default-latest.css" rel="stylesheet" />
+		<link href="css/jqconsole.css" rel="stylesheet" />
 		<link href="css/custom.css" rel="stylesheet" />
     </head>
     <body>
@@ -12,7 +13,18 @@
 		<div id="body">
 			<div class="ui-layout-center"></div>
 			<div class="ui-layout-north">North</div>
-			<div class="ui-layout-south">South</div>
+			<div class="ui-layout-south">
+				<div id="editor">(defn char-counter [str]
+  (loop [counts {}
+         s str]
+    (if-not (empty? s)
+      (let [c (first s)]
+        (recur (assoc counts c (inc (get counts c 0)))
+               (rest s)))
+      counts)))</div>
+     			<div id="repl">
+     			</div> 
+			</div>
 			<div class="ui-layout-east">East</div>
 			<div class="ui-layout-west">West</div>
 		</div>
@@ -88,28 +100,17 @@
 
 
 
-		<script src="js/impress.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script>
+		<script src="js/impress.js"></script>
+		<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.js"></script>
+		<script src="js/jqconsole.js" type="text/javascript" charset="utf-8"></script>
         <script type="text/javascript" src="js/jquery.layout.js"></script>
-        <script type="text/javascript" src="js/clj.js"></script>
         <script type="text/javascript" src="networking/server.js"></script>
+        <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" src="creator.js"></script>
+        <script type="text/javascript" src="presenter.js"></script>
         <script type="text/javascript" src="main.js"></script>
 
-		<script>impress().init();</script>
-        <script>
-        var layout;
-
-		$(document).ready( function() {
-			layout = $("#body").layout({
-				minSize:			25
-			,	north__size:		.05
-			,	south__size:		.3
-			,	west__size:			'30%'
-			,	east__size:			'10%'
-			,	spacing_closed:		16
-			});
-		});
-        </script>
     </body>
 </html>

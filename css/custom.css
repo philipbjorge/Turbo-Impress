@@ -13,6 +13,24 @@
 	pointer-events: none !important;
 }
 
+#editor {
+	position: absolute;
+	top: 0;
+	right: 50%;
+	bottom: 0;
+	left: 0;
+}
+
+#repl {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 50%;
+  bottom: 0;
+  border-left: 5px grey solid;
+  background-color: #272822;
+}
+
 #body>div {
 	color: white;
 	opacity: 0.8;
@@ -21,4 +39,7 @@
 
 .ui-layout-center {
 	opacity: 0 !important;
+}
+.ui-layout-south {
+	opacity: 0.9 !important;
 }

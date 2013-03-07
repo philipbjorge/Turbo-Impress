@@ -1,9 +1,20 @@
 (function() {
+	impress().init();
+
     var presenter = false;
+    var init, editor, layout, repl;
     if (presenter) {
         // TODO: Define interface for passing in the server callbacks
         start_server();
+        init = presenter_init;
     } else {
-
+        init = creator_init;
     }
+
+    if (typeof(init.layout) === "function")
+        init.layout();
+    if (typeof(init.editor) === "function")
+        init.editor();
+    if (typeof(init.repl) === "function")
+        init.repl();
 })();
