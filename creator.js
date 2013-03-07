@@ -2,7 +2,7 @@ var creator_init = {
 	editor: function() {
 		editor = ace.edit("editor");
 		editor.setTheme("ace/theme/monokai");
-		editor.getSession().setMode("ace/mode/clojure");
+		editor.getSession().setMode("ace/mode/ruby");
 	},
 
 	layout: function() {
@@ -22,15 +22,24 @@ var creator_init = {
         repl.RegisterMatching('{', '}', 'jqconsole-brackets');
         repl.RegisterMatching('[', ']', 'jqconsole-braces');
         repl.RegisterMatching('(', ')', 'jqconsole-parens');
-        var startPrompt = function () {
+		// Output input with the class jqconsole-output.
+		var old_console_log = console.log;
+		console.log = function(args) { old_console_log.apply(this, arguments); repl.Write(Array.prototype.join.call(arguments, ' ') + "\n", 'jqconsole-output'); };
+
+        var startPrompt = function (repl_input) {
           // Start the prompt with history enabled.
           repl.Prompt(true, function (input) {
-            // Output input with the class jqconsole-output.
-            repl.Write(input + '\n', 'jqconsole-output');
+            try {
+            	repl.Write(Move.eval(repl_input + "\n" + input) + '\n', 'jqconsole-output-repl');
+            	repl_input += "\n" + input;
+        	}
+        	catch (err) {
+        		repl.Write(err + '\n', 'jqconsole-error');
+        	}
             // Restart the prompt.
-            startPrompt();
+            startPrompt(repl_input);
           });
         };
-        startPrompt();
+        startPrompt("");
 	}
 };

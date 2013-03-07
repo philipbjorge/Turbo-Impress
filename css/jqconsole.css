@@ -30,6 +30,14 @@
 }
 /* The text color of the output. */
 .jqconsole-output {
+    color: #CCDF32;
+}
+
+.jqconsole-output-repl {
+    color: grey;
+}
+
+.jqconsole-error {
     color: #F92672;
 }
 
