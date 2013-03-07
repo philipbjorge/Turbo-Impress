@@ -31,6 +31,10 @@
   background-color: #272822;
 }
 
+.ace_selection {
+	background-color: black !important;
+}
+
 #repl-exec {
 	z-index: 10000;
 	position: absolute;
