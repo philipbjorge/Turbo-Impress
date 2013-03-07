@@ -3,6 +3,7 @@
 
     var presenter = false;
     var init, editor, layout, repl;
+
     if (presenter) {
         // TODO: Define interface for passing in the server callbacks
         start_server();

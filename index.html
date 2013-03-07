@@ -112,6 +112,14 @@ print Dog.name, 'is', Dog.age, 'years old'</div>
 
 		</div>
 
+		<script>
+		// NOTE: Because Move is a node module, it uses a different timer
+		// https://github.com/rogerwang/node-webkit/wiki/Console-and-timers
+		global.setInterval = function(func, interval) {
+			console.log("Unimplemented: repeat {every: 1000}");
+			return null;
+		};
+		</script>
         <script>var Move = require('move-panta');</script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script>
 		<script src="js/impress.js"></script>
