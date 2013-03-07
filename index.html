@@ -17,9 +17,6 @@
 				<div id="editor">hello_to = ^(name){ "Hello "+name }
 repeat {times: 3} ^{ print hello_to {name: "John"} }
 
-# Same thing as the above, but in shorthand form:
-repeat 3, ^{ print hello_to "Julia" }
-
 numbers = [1,2,2,3,1].unique()
 print numbers
 numbers.sort().forEach ^(number){ print "Number: "+number }
@@ -112,15 +109,11 @@ print Dog.name, 'is', Dog.age, 'years old'</div>
 
 		</div>
 
-		<script>
-		// NOTE: Because Move is a node module, it uses a different timer
-		// https://github.com/rogerwang/node-webkit/wiki/Console-and-timers
-		global.setInterval = function(func, interval) {
-			console.log("Unimplemented: repeat {every: 1000}");
-			return null;
-		};
-		</script>
-        <script>var Move = require('move-panta');</script>
+        <script>var Move = require('move-panta');
+        			Move.defaultCompilationOptions.raw = false;
+        			Move.defaultCompilationOptions.wrapSource = false; 
+        			Move.defaultCompilationOptions.includeRuntime = true;
+        </script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script>
 		<script src="js/impress.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
