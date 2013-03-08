@@ -33,6 +33,12 @@
     color: #CCDF32;
 }
 
+.jqconsole-output img, .jqconsole-output-repl img {
+    max-width: 100px;
+    max-height: 100px;
+    display: inline-block;
+}
+
 .jqconsole-output-repl {
     color: grey;
 }

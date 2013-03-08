@@ -16,6 +16,10 @@
         init.editor();
     if (typeof(init.remote) === "function")
         init.remote();
+    if (typeof(init.slides) === "function")
+        init.slides();
+    if (typeof(init.content) === "function")
+        init.content();
     if (typeof(init.repl) === "function")
         init.repl();
 

@@ -42,14 +42,103 @@ var creator_init = {
 			end: function() { return window.impress.jmpress('end'); },
 			next: function() { return window.impress.jmpress('next'); },
 			prev: function() { return window.impress.jmpress('prev'); },
-			goto: function(a) { return window.impress.jmpress('goTo', a, "jump"); },
+			goto: function(a) { if (typeof(a) === "number") { a = window.slides[a%window.slides.length]; } return window.impress.jmpress('goTo', a, "jump"); },
 			cancelTimers: function() { for(var i = 0; i < global.timers.length; i++) { global.timers[i].stop(); } global.timers = []; }
 		};
 	},
 
+	content: function() {
+		content = {
+			search: function(q, call_back_var, count, media_types) {
+				if (media_types === undefined)
+					media_types = "web+image+video";
+				if (count === undefined)
+					count = 5;
+				var url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Query=%27" + encodeURIComponent(q) +
+				"%27&Sources=%27" + encodeURIComponent(media_types) + "%27";
+
+				var thisContent = this;
+
+				$.getJSON(url, {}, function(o) { 
+					var data = o.d.results[0];
+					var r = [];
+
+					if (data.Image.length > 0) {
+						for (var i = 0; i < count && i < data.Image.length; i++)
+							r.push('<img src="'+data.Image[i].MediaUrl+'" />');
+					}
+					if (data.Video.length > 0) {
+						for (var i = 0; i < count && i < data.Video.length; i++)
+							r.push('<a href="'+data.Video[i].MediaUrl+'"><img src="'+data.Video[i].Thumbnail.MediaUrl+'" /></a>');
+					}
+					if (data.Web.length > 0) {
+						for (var i = 0; i < count && i < data.Web.length; i++)
+							r.push('<a href="' + data.Web[i].Url + '">' + data.Web[i].Url +' </a>');
+					}
+
+					console.log(r);
+					thisContent.lastReceived = r;
+					if (call_back_var !== undefined)
+						Move.eval(call_back_var + " = Content.lastReceived");
+				});
+			}
+		};
+	},
+
+	slides: function() {
+		slides = $(".step");
+		$.jmpress("template", "auto", {
+			children: function(idx) {
+				return {
+					z: 0,
+					y: 0
+					,x: idx * 300
+					,template: "auto"
+					,scale: 0.3
+				}
+			}
+		});
+
+		slides.remove = function(i) {
+			var removeStep;
+			if (typeof(i) === "number")
+				removeStep = this[i % this.length];
+			else
+				removeStep = i;
+			$('#impress').jmpress('deinit', removeStep);
+			removeStep.remove();
+		};
+
+		slides.add = function(o) {
+			defaults = {
+				showImmediately: true, // show the slide immediately and show in progress; call Slide.show()
+				position: {},	// TODO
+				template: null,	// Available: "stacking"
+				content: []
+			};
+			var settings = $.extend({}, defaults, o);
+			var newStep = $('<div class="step" />');
+			newStep.attr('data-template', settings.template);
+			newStep.attr('data-y', 600*this.length);
+			newStep.html(settings.content.join());
+			
+			if (settings.showImmediately)
+				// publish the change over the network
+				var dummy = 1;
+			$('#impress').jmpress('canvas').append(newStep);
+			$('#impress').jmpress('init', newStep);
+			this.push(newStep);
+
+			// TODO: Return Slide type
+			remote.goto(newStep);
+			return newStep;
+		};
+		// TODO: Add Search/filter features
+	},
+
 	repl: function () {
 		// Set up the environment
-		Move.eval("Remote = window.remote");
+		Move.eval("Remote = window.remote\nSlides = window.slides\nContent = window.content");
 
         repl = $('#repl').jqconsole('', '>');
         repl.RegisterMatching('{', '}', 'jqconsole-brackets');
@@ -65,7 +154,7 @@ var creator_init = {
 		var last_printed_count = 0;
 		console.log = function(args) { 
 			old_console_log.apply(this, arguments);
-			repl.Write(Array.prototype.join.call(arguments, ' ') + "\n", 'jqconsole-output');
+			repl.Write(Array.prototype.join.call(arguments, '\n') + "\n", 'jqconsole-output', false);
 			// TODO: Check for replacable elements (e.g. images)
 		};
 
@@ -73,7 +162,7 @@ var creator_init = {
           // Start the prompt with history enabled.
           repl.Prompt(true, function (input) {
             try {
-          		repl.Write(Move.eval(input) + '\n', 'jqconsole-output-repl');
+          		repl.Write(Move.eval(input) + '\n', 'jqconsole-output-repl', false);
 			}
 			catch (err) {
 				repl.Write(err + '\n', 'jqconsole-error');

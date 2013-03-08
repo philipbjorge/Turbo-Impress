@@ -13,6 +13,11 @@
 	pointer-events: none !important;
 }
 
+.step img {
+	max-width: 200px;
+	max-height: 200px;
+}
+
 #editor {
 	position: absolute;
 	top: 0;
