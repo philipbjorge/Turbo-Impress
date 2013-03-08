@@ -61,14 +61,22 @@ print Dog.name, 'is', Dog.age, 'years old'</div>
         		};
         </script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
+		<script src="http://scripts.embed.ly/jquery.embedly-3.0.2.min.js" type="text/javascript"></script>
 		<script>
-		        		// Bing Auth
+		       	// Bing Auth
         		$.ajaxSetup({
 				  headers: {
 				    'Authorization': "Basic " + btoa("8yTcYuGX5kCKeotk4S+6ovkmnF5MAq+7n1KXINYnQ4Q=:8yTcYuGX5kCKeotk4S+6ovkmnF5MAq+7n1KXINYnQ4Q=")
 				  }
 				});
+				// embed.ly auth
+				$.embedly.defaults.key = 'd23852e63bac46c9b4f6bade1a0c75d1';
         </script>
+        <link rel="stylesheet" href="fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+		<script type="text/javascript" src="fancybox/jquery.fancybox.pack.js"></script>
+		<script type="text/javascript" src="fancybox/helpers/jquery.fancybox-media.js"></script>
+
+
 		<script src="js/jmpress.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.js"></script>

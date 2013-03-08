@@ -39,6 +39,13 @@
     display: inline-block;
 }
 
+.jqconsole .embed {
+    max-width: 200px;
+    max-height: 200px;
+    display: inline-block;
+    overflow: hidden;
+}
+
 .jqconsole-output-repl {
     color: grey;
 }

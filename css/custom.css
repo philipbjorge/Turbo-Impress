@@ -6,11 +6,17 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
-	pointer-events: auto !important;
+	pointer-events: none;
 }
 
-#impress {
-	pointer-events: none !important;
+.fancybox-overlay {
+	z-index: 1000001 !important;
+}
+
+.fancybox-close {
+	position: fixed !important;
+    top: 0px !important;
+    right: 0px !important;
 }
 
 .step img {
@@ -60,10 +66,12 @@
 	color: white;
 	opacity: 0.8;
 	background-color: #333;
+	pointer-events: auto;
 }
 
 .ui-layout-center {
 	opacity: 0 !important;
+	pointer-events: none !important;
 }
 .ui-layout-south {
 	opacity: 0.9 !important;

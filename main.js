@@ -20,6 +20,8 @@
         init.slides();
     if (typeof(init.content) === "function")
         init.content();
+    if (typeof(init.fancybox) === "function")
+        init.fancybox();
     if (typeof(init.repl) === "function")
         init.repl();
 

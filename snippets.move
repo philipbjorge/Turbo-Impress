@@ -13,7 +13,10 @@
 	s = step_through([1, 5, 9], 2000)
 	s.cancel()
 
-## Kittens Slide!!11!!
-Content.search("Kittens", "kitties")
-kitties = ["<h1>Kittens!1!!</h1>"].concat(kitties[0:3])
-Slides.add({content: kitties})
+## Slide Creation
+Content.search("Kittens", "kittens", 3, "image")
+Content.search("Puppies", "puppies", 3, "video")
+Content.search("Philip Bjorge", "me", 3, "web")
+
+pieces = [["<h1>Kittens</h1>", kittens], ["<h1>Puppies</h1>", puppies], ["<h1>ME</h1>", me]]
+just_added = pieces.map ^(v){Slides.add({content: v})}

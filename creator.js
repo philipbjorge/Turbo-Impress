@@ -47,6 +47,26 @@ var creator_init = {
 		};
 	},
 
+	fancybox: function() {
+			$('a.fancybox')
+		    .fancybox({
+		        padding    : 0,
+		        margin     : 5,
+		        nextEffect : 'fade',
+		        prevEffect : 'none',
+		        autoCenter : false,
+		        helpers : {
+					media : {}
+				},
+		        autoResize: true,
+		        fitToView: false,
+		        width: $(window).width() * 0.99,
+		        aspectRatio: true,
+		        scrolling: 'no',
+		        live: true
+		    });
+	},
+
 	content: function() {
 		content = {
 			search: function(q, call_back_var, count, media_types) {
@@ -65,15 +85,15 @@ var creator_init = {
 
 					if (data.Image.length > 0) {
 						for (var i = 0; i < count && i < data.Image.length; i++)
-							r.push('<img src="'+data.Image[i].MediaUrl+'" />');
+							r.push('<a href="'+data.Image[i].MediaUrl+'" class="fancybox fancybox.image"><img src="'+data.Image[i].MediaUrl+'" /></a>');
 					}
 					if (data.Video.length > 0) {
 						for (var i = 0; i < count && i < data.Video.length; i++)
-							r.push('<a href="'+data.Video[i].MediaUrl+'"><img src="'+data.Video[i].Thumbnail.MediaUrl+'" /></a>');
+							r.push('<a href="'+data.Video[i].MediaUrl+'" class="fancybox fancybox.iframe"><img src="'+data.Video[i].Thumbnail.MediaUrl+'" /></a>');
 					}
 					if (data.Web.length > 0) {
 						for (var i = 0; i < count && i < data.Web.length; i++)
-							r.push('<a href="' + data.Web[i].Url + '">' + data.Web[i].Url +' </a>');
+							r.push('<a href="' + data.Web[i].Url + '" class="fancybox fancybox.iframe">' + data.Web[i].Url +' </a>');
 					}
 
 					console.log(r);
@@ -121,7 +141,7 @@ var creator_init = {
 			newStep.attr('data-template', settings.template);
 			newStep.attr('data-y', 600*this.length);
 			newStep.html(settings.content.join());
-			
+
 			if (settings.showImmediately)
 				// publish the change over the network
 				var dummy = 1;
@@ -129,8 +149,10 @@ var creator_init = {
 			$('#impress').jmpress('init', newStep);
 			this.push(newStep);
 
-			// TODO: Return Slide type
 			remote.goto(newStep);
+			newStep.toString = function() {
+				return "[Slide: #" + $(this).attr('id') + "]";
+			};
 			return newStep;
 		};
 		// TODO: Add Search/filter features
