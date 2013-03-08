@@ -37,9 +37,12 @@ var creator_init = {
 
 	remote: function() {
 		remote = {
-			next: function() { return (window.impress()).next(undefined, true); },
-			prev: function() { return (window.impress()).prev(undefined, true); },
-			goto: function(a) { return (window.impress()).goto(a, undefined, true); },
+			active: function() { return window.impress.jmpress('active'); },
+			home: function() { return window.impress.jmpress('home'); },
+			end: function() { return window.impress.jmpress('end'); },
+			next: function() { return window.impress.jmpress('next'); },
+			prev: function() { return window.impress.jmpress('prev'); },
+			goto: function(a) { return window.impress.jmpress('goTo', a, "jump"); },
 			cancelTimers: function() { for(var i = 0; i < global.timers.length; i++) { global.timers[i].stop(); } global.timers = []; }
 		};
 	},

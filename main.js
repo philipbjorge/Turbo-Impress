@@ -19,5 +19,6 @@
     if (typeof(init.repl) === "function")
         init.repl();
 
-    impress().init();
+    window.impress = $("#impress");
+    window.impress.jmpress();
 })();

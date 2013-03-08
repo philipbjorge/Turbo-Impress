@@ -11,15 +11,24 @@ A language and development environment for creating live presentations.
 ###Remote
 This abstraction is used to control the presenter's slide. Concurrency resolution has not been decided yet.
 
-####Remote.next(duration)
+####Remote.next()
 Transitions to the next slide in the deck.
 
-####Remote.prev(duration)
+####Remote.prev()
 Transitions to the previous slide in the deck.
 
-####Remote.goto(slide, duration)
+####Remote.goto(slide)
 Transitions to the supplied Slide in the deck.
-slide can be the number of the slide (e.g. 7), the id of the slide (e.g. "slide_id_name"), or the DOM element.
+slide can be the id of the slide (e.g. "slide_id_name"), or the DOM element.
+
+####Remote.active()
+Returns the active slide.
+
+####Remote.home()
+Transitions to the starting slide.
+
+####Remote.end()
+Transitions to the ending slide.
 
 ####Remote.cancelTimers()
 Cancels all currently running asynchronous code started through Move.
