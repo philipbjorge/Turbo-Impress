@@ -113,6 +113,16 @@ print Dog.name, 'is', Dog.age, 'years old'</div>
         			Move.defaultCompilationOptions.raw = false;
         			Move.defaultCompilationOptions.wrapSource = false; 
         			Move.defaultCompilationOptions.includeRuntime = true;
+
+        		var editor, layout, repl, slides, remote;
+
+        		global.oldInterval = global.setInterval;
+        		global.timers = [];
+        		global.setInterval = function(f, dur) {
+        			var id = global.oldInterval(f, dur);
+        			global.timers.push(id);
+        			return id;
+        		};
         </script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.js"></script>
 		<script src="js/impress.js"></script>

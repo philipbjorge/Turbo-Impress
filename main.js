@@ -1,8 +1,6 @@
 (function() {
-	impress().init();
-
     var presenter = false;
-    var init, editor, layout, repl;
+    var init;
 
     if (presenter) {
         // TODO: Define interface for passing in the server callbacks
@@ -16,6 +14,10 @@
         init.layout();
     if (typeof(init.editor) === "function")
         init.editor();
+    if (typeof(init.remote) === "function")
+        init.remote();
     if (typeof(init.repl) === "function")
         init.repl();
+
+    impress().init();
 })();

@@ -35,7 +35,19 @@ var creator_init = {
 			});
 	},
 
+	remote: function() {
+		remote = {
+			next: function() { return (window.impress()).next(undefined, true); },
+			prev: function() { return (window.impress()).prev(undefined, true); },
+			goto: function(a) { return (window.impress()).goto(a, undefined, true); },
+			cancelTimers: function() { for(var i = 0; i < global.timers.length; i++) { global.timers[i].stop(); } global.timers = []; }
+		};
+	},
+
 	repl: function () {
+		// Set up the environment
+		Move.eval("Remote = window.remote");
+
         repl = $('#repl').jqconsole('', '>');
         repl.RegisterMatching('{', '}', 'jqconsole-brackets');
         repl.RegisterMatching('[', ']', 'jqconsole-braces');
@@ -51,6 +63,7 @@ var creator_init = {
 		console.log = function(args) { 
 			old_console_log.apply(this, arguments);
 			repl.Write(Array.prototype.join.call(arguments, ' ') + "\n", 'jqconsole-output');
+			// TODO: Check for replacable elements (e.g. images)
 		};
 
         var startPrompt = function () {

@@ -457,11 +457,12 @@
         
         // `goto` API function that moves to step given with `el` parameter (by index, id or element),
         // with a transition `duration` optionally given as second parameter.
-        var goto = function ( el, duration ) {
-            
+        var goto = function ( el, duration, b ) {
+            if (typeof(b) === "undefined") b = false;
+            if (typeof(editor) === "undefined") editor = "null";
             if ( !initialized || !(el = getStep(el)) || 
-                ((typeof(editor.isFocused) === "function" && editor.isFocused()) ||
-                 (document.querySelectorAll('.jqconsole-blurred').length === 0))) {
+                (!b && ((typeof(editor.isFocused) === "function" && editor.isFocused()) ||
+                 (document.querySelectorAll('.jqconsole-blurred').length === 0)))) {
                 // presentation not initialized or given element is not a step
                 return false;
             }
@@ -559,19 +560,19 @@
         };
         
         // `prev` API function goes to previous step (in document order)
-        var prev = function () {
+        var prev = function (dur, b) {
             var prev = steps.indexOf( activeStep ) - 1;
             prev = prev >= 0 ? steps[ prev ] : steps[ steps.length-1 ];
             
-            return goto(prev);
+            return goto(prev, dur, b);
         };
         
         // `next` API function goes to next step (in document order)
-        var next = function () {
+        var next = function (dur, b) {
             var next = steps.indexOf( activeStep ) + 1;
             next = next < steps.length ? steps[ next ] : steps[ 0 ];
             
-            return goto(next);
+            return goto(next, dur, b);
         };
         
         // Adding some useful classes to step elements.
