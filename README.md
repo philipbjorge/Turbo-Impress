@@ -1,5 +1,4 @@
-Turbo-Impress
-=============
+![TURBO IMPRESS](https://raw.github.com/philipbjorge/Turbo-Impress/master/img/logo.png)
 
 A development environment / DSL for creating presentations on the fly.
 
