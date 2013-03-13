@@ -42,7 +42,11 @@ var creator_init = {
 			end: function() { return window.impress.jmpress('end'); },
 			next: function() { return window.impress.jmpress('next'); },
 			prev: function() { return window.impress.jmpress('prev'); },
-			goto: function(a) { if (typeof(a) === "number") { a = window.slides[a%window.slides.length]; } return window.impress.jmpress('goTo', a, "jump"); },
+			goto: function(a) { 
+				if (typeof(a) === "number") { a = window.slides[a%window.slides.length]; }
+				// TODO: Check for instance of Slide
+				return window.impress.jmpress('goTo', a, "jump"); 
+			},
 			cancelTimers: function() { for(var i = 0; i < global.timers.length; i++) { global.timers[i].stop(); } global.timers = []; }
 		};
 	},
@@ -67,15 +71,39 @@ var creator_init = {
 		    });
 	},
 
+	network: function(server) {
+		// Client Handlers
+		window.server = start_client(server, {
+			alert: function(args) {
+				alert($.makeArray(arguments).join(" "));
+			},
+			goto: function(args) {
+				var slide = arguments[0];
+				remote.goto(slide);
+			},
+			add_slide: function(args) {
+				slide.add({content: arguments[0]});
+			},
+			rm_slide: function(args) {
+				slide.remove(arguments[0]);
+			}
+		});
+	},
+
 	content: function() {
 		content = {
-			search: function(q, call_back_var, count, media_types) {
-				if (media_types === undefined)
-					media_types = "web+image+video";
-				if (count === undefined)
-					count = 5;
+			search: function(q, o) {
+				var defaults = {
+					call_back_var: undefined,
+					call_back_fn: undefined,
+					count: 5,
+					media_types: "web+image+video"
+				};
+
+				var settings = $.extend({}, defaults, o);
+
 				var url = "https://api.datamarket.azure.com/Bing/Search/v1/Composite?Query=%27" + encodeURIComponent(q) +
-				"%27&Sources=%27" + encodeURIComponent(media_types) + "%27";
+				"%27&Sources=%27" + encodeURIComponent(settings.media_types) + "%27";
 
 				var thisContent = this;
 
@@ -84,22 +112,24 @@ var creator_init = {
 					var r = [];
 
 					if (data.Image.length > 0) {
-						for (var i = 0; i < count && i < data.Image.length; i++)
+						for (var i = 0; i < settings.count && i < data.Image.length; i++)
 							r.push('<a href="'+data.Image[i].MediaUrl+'" class="fancybox fancybox.image"><img src="'+data.Image[i].MediaUrl+'" /></a>');
 					}
 					if (data.Video.length > 0) {
-						for (var i = 0; i < count && i < data.Video.length; i++)
+						for (var i = 0; i < settings.count && i < data.Video.length; i++)
 							r.push('<a href="'+data.Video[i].MediaUrl+'" class="fancybox fancybox.iframe"><img src="'+data.Video[i].Thumbnail.MediaUrl+'" /></a>');
 					}
 					if (data.Web.length > 0) {
-						for (var i = 0; i < count && i < data.Web.length; i++)
+						for (var i = 0; i < settings.count && i < data.Web.length; i++)
 							r.push('<a href="' + data.Web[i].Url + '" class="fancybox fancybox.iframe">' + data.Web[i].Url +' </a>');
 					}
 
 					console.log(r);
 					thisContent.lastReceived = r;
-					if (call_back_var !== undefined)
+					if (settings.call_back_var !== undefined)
 						Move.eval(call_back_var + " = Content.lastReceived");
+					if (settings.call_back_fn !== undefined)
+						Move.eval(settings.call_back_fn + "(Content.lastReceived)");
 				});
 			}
 		};
@@ -107,15 +137,27 @@ var creator_init = {
 
 	slides: function() {
 		slides = $(".step");
+		var slidify = function(s, content) {
+			s.toString = function() {
+				return "#" + $(this).attr('id');
+			};
+			s.__content = content;
+			return s;
+		};
+		slides = slides.map(function(e) { slidify(e, []); });
+		slides.toString = function() {
+			return this.toArray().toString();
+		};
+
 		$.jmpress("template", "auto", {
 			children: function(idx) {
 				return {
 					z: 0,
-					y: 0
-					,x: idx * 300
-					,template: "auto"
-					,scale: 0.3
-				}
+					y: 0,
+					x: idx * 300,
+					template: "auto",
+					scale: 0.3
+				};
 			}
 		});
 
@@ -150,9 +192,7 @@ var creator_init = {
 			this.push(newStep);
 
 			remote.goto(newStep);
-			newStep.toString = function() {
-				return "[Slide: #" + $(this).attr('id') + "]";
-			};
+			newStep = slidify(newStep, settings.content);
 			return newStep;
 		};
 		// TODO: Add Search/filter features
@@ -160,7 +200,7 @@ var creator_init = {
 
 	repl: function () {
 		// Set up the environment
-		Move.eval("Remote = window.remote\nSlides = window.slides\nContent = window.content");
+		Move.eval("Remote = window.remote\nSlides = window.slides\nContent = window.content\nServer = window.server");
 
         repl = $('#repl').jqconsole('', '>');
         repl.RegisterMatching('{', '}', 'jqconsole-brackets');
@@ -177,7 +217,6 @@ var creator_init = {
 		console.log = function(args) { 
 			old_console_log.apply(this, arguments);
 			repl.Write(Array.prototype.join.call(arguments, '\n') + "\n", 'jqconsole-output', false);
-			// TODO: Check for replacable elements (e.g. images)
 		};
 
         var startPrompt = function () {

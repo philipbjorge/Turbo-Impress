@@ -1,18 +1,45 @@
 <html>
     <head>
-        <title></title>
+        <title>Turbo Impress</title>
+        <!-- jQuery UI -->
         <link href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.0/themes/blitzer/jquery-ui.css" rel="stylesheet" />
+		
+		<!-- Impress.js -->
 		<link href="http://fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
-		<link href="css/impress-demo.css" rel="stylesheet" />
-		<link href="css/layout-default-latest.css" rel="stylesheet" />
-		<link href="css/jqconsole.css" rel="stylesheet" />
+		<link href="/libs/jmpress/impress-demo.css" rel="stylesheet" />
+
+		<!-- jQuery layout.UI -->
+		<link href="/libs/layout/layout-default-latest.css" rel="stylesheet" />
+
+		<!-- jqConsole -->
+		<link href="/libs/jqconsole/jqconsole.css" rel="stylesheet" />
+
+		<!-- Twitter Bootstrap -->
+		<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.min.css" rel="stylesheet">
+		
+		<!-- Fancybox -->
+		<link rel="stylesheet" href="/libs/fancybox/jquery.fancybox.css" type="text/css" media="screen" />
+
+		<!-- Custom -->
 		<link href="css/custom.css" rel="stylesheet" />
     </head>
     <body>
-
 		<div id="body">
+			<!-- Transparent viewport div for jmpress -->
 			<div class="ui-layout-center"></div>
-			<div class="ui-layout-north">North</div>
+
+			<!-- Server/HUD Pane -->
+			<div class="ui-layout-north">
+				<form id="networking-form" class="form-inline">
+					<input type="text" class="input" id="networking-settings" placeholder="server:port">
+					<label class="checkbox">
+						<input id="isPresenter" type="checkbox"> Presenter?
+					</label>
+					<button id="networking-launch" class="btn">Launch Server</button>
+				</form>
+			</div>
+
+			<!-- REPL/Ace Pane -->
 			<div class="ui-layout-south">
 				<div id="editor">hello_to = ^(name){ "Hello "+name }
 repeat {times: 3} ^{ print hello_to {name: "John"} }
@@ -30,60 +57,61 @@ print Dog.name, 'is', Dog.age, 'years old'
 Cat.age = 9
 print Cat.name, 'is', Cat.age, 'years old'
 print Dog.name, 'is', Dog.age, 'years old'</div>
+
      			<div id="repl">
      			</div> 
+     			<!-- The little button for repl execution -->
      			<div id="repl-exec">
      				<img src="img/play.png" />
      			</div>
 			</div>
+
+			<!-- Unused east/west panes -->
 			<div class="ui-layout-east">East</div>
 			<div class="ui-layout-west">West</div>
 		</div>
 
+		<!-- Slideshow -->
 		<div id="impress" data-template="auto">
 			<div id="start" class="step">
 			</div>
 		</div>
 
-        <script>var Move = require('move-panta');
-        			Move.defaultCompilationOptions.raw = false;
-        			Move.defaultCompilationOptions.wrapSource = false; 
-        			Move.defaultCompilationOptions.includeRuntime = true;
-
-        		var editor, layout, repl, slides, remote, content;
-
-        		global.oldInterval = global.setInterval;
-        		global.timers = [];
-        		global.setInterval = function(f, dur) {
-        			var id = global.oldInterval(f, dur);
-        			global.timers.push(id);
-        			return id;
-        		};
-        </script>
+		<!-- jQuery, jq UI, a compatability layer and helpers -->
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js"></script>
-		<script src="http://scripts.embed.ly/jquery.embedly-3.0.2.min.js" type="text/javascript"></script>
-		<script>
-		       	// Bing Auth
-        		$.ajaxSetup({
-				  headers: {
-				    'Authorization': "Basic " + btoa("8yTcYuGX5kCKeotk4S+6ovkmnF5MAq+7n1KXINYnQ4Q=:8yTcYuGX5kCKeotk4S+6ovkmnF5MAq+7n1KXINYnQ4Q=")
-				  }
-				});
-				// embed.ly auth
-				$.embedly.defaults.key = 'd23852e63bac46c9b4f6bade1a0c75d1';
-        </script>
-        <link rel="stylesheet" href="fancybox/jquery.fancybox.css" type="text/css" media="screen" />
-		<script type="text/javascript" src="fancybox/jquery.fancybox.pack.js"></script>
-		<script type="text/javascript" src="fancybox/helpers/jquery.fancybox-media.js"></script>
-
-
-		<script src="js/jmpress.js"></script>
 		<script src="http://code.jquery.com/jquery-migrate-1.1.1.js"></script>
 		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.2/jquery-ui.js"></script>
-		<script src="js/jqconsole.js" type="text/javascript" charset="utf-8"></script>
-        <script type="text/javascript" src="js/jquery.layout.js"></script>
-        <script type="text/javascript" src="networking/server.js"></script>
-        <script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+		<script src="/js/helpers.js"></script>
+		<script src="/js/init/config.js"></script>
+
+		<!-- Initialization/Setup -->
+        <script src="/js/init/move.js"></script>
+        <script src="/js/abstractions/slide.js"></script>
+        <script src="/js/abstractions/presentation.js"></script>
+
+        <script>
+        		var editor, layout, repl, slides, remote, content, presenter, server;
+        </script>
+        
+        <!-- Auxiliary Components -->
+	        <!-- Fancybox -->
+			<script type="text/javascript" src="/libs/fancybox/jquery.fancybox.pack.js"></script>
+			<script type="text/javascript" src="/libs/fancybox/helpers/jquery.fancybox-media.js"></script>
+			<!-- jmpress (slideshow) -->
+			<script src="/libs/jmpress/jmpress.js"></script>
+			<!-- jqConsole (REPL) -->
+			<script src="/libs/jqconsole/jqconsole.js" type="text/javascript" charset="utf-8"></script>
+        	<!-- jquery layout (panes) -->
+        	<script type="text/javascript" src="/libs/layout/jquery.layout.js"></script>
+        	<!-- Ace Editor -->
+        	<script src="http://d1n0x3qji82z53.cloudfront.net/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+        	<!-- Client side sharejs libraries because I was unable to use
+        		 both the server and client nodejs libraries in a single program -->
+        	<script src="/libs/sharejs/bcsocket.js"></script>
+			<script src="/libs/sharejs/share.js"></script>
+			<script src="/libs/sharejs/json.js"></script>
+
+		<!-- TODO: Refactor this -->
         <script type="text/javascript" src="creator.js"></script>
         <script type="text/javascript" src="presenter.js"></script>
         <script type="text/javascript" src="main.js"></script>

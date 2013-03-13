@@ -1,4 +1,5 @@
 {
     "name": "Turbo Impress",
-    "main": "index.html#/overview"
+    "main": "bootstrap.html",
+    "node-remote": "<local>"
 }

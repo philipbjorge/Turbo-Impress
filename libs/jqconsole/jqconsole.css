@@ -1,6 +1,7 @@
 /* The inner console element. */
 .jqconsole {
     padding: 10px;
+    background-color: transparent !important;
 }
 /* The cursor. */
 .jqconsole-cursor {

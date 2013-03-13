@@ -1,15 +1,49 @@
 Turbo-Impress
 =============
 
-A language and development environment for creating live presentations.
+A development environment / DSL for creating presentations on the fly.
 
 ##Status:
+  * 3/13/2013 - Finally got sharejs partially implemented for the presentation data structure. The current slide string is kept synchronized. Major refactoring with a bit more to go. Added a logo.
   * 3/7/2013 - Clean embedding of Movelang, a repl, and Ace Editor - [YouTube](http://youtu.be/o3W3k301cqw)
   * 3/6/2013 - Functional node-webkit project with impress.js and ui.layout
 
-##Available Abstractions
+##How to Run
+Download one of the node-webkit [prebuilt binaries](https://github.com/rogerwang/node-webkit).
+
+Follow the [instructions](https://github.com/rogerwang/node-webkit/wiki/How-to-run-apps) to start the app.
+
+##Abstractions
+###Presentation
+This is the main abstraction/data structure that is synchronized between the clients and server.
+####Presentation.slides [<Slide>,...]
+#####Presentation.slides.mv()
+Move a slide from --> to in the presentation order (and positionally?).
+#####Presentation.slides.rm()
+Removes a slide from the presentation.
+####Slides.add(options)
+Adds a slide to the presentation.
+
+####Presentation.current()
+####Presentation.current(<Slide>)
+Currently unspecified and only partially implemented.
+
+	Presentation.current(); # returns the #id of the main presenter's slide.
+	Presentation.current("#slide"); # moves the main presenter's slide to the specifed.
+
+####Presentation.next()
+Moves the presenter to the next slide (by index in the Slides array).
+####Presentation.prev()
+Moves the presenter to the previous slide (by index in the Slides array).
+####Presentation.goto(<Slide>)
+Moves the presenter to a specified slide.
+
+
 ###Remote
-This abstraction is used to control the presenter's slide. Concurrency resolution has not been decided yet.
+This abstraction is used to control the current user's slide. An editor might want to be on a different slide than the presenter (e.g. to create the next slide).
+
+####Remote.autopilot(<Bool>)
+Sets the autopilot on (true) or off (false). When autopilot is set to true, you move through the slideshow in sync with the presenter. When autopilot is false, you have to move yourself.
 
 ####Remote.next()
 Transitions to the next slide in the deck.
@@ -17,42 +51,27 @@ Transitions to the next slide in the deck.
 ####Remote.prev()
 Transitions to the previous slide in the deck.
 
-####Remote.goto(slide)
+####Remote.goto(<Slide>)
 Transitions to the supplied Slide in the deck.
-slide can be the number of the slide (e.g. 7), the id of the slide (e.g. "slide_id_name"), or the DOM element.
 
-####Remote.active()
-Returns the active slide.
-
-####Remote.home()
-Transitions to the starting slide.
-
-####Remote.end()
-Transitions to the ending slide.
+####Remote.current()
+Returns the current slide.
 
 ####Remote.cancelTimers()
 Cancels all currently running asynchronous code started through Move.
+This will need to be moved.
 
-###Slides
-
-####Slides.remove(i)
-Removes a slide where i is the index (integer) or the Slide object.
-
-####Slides.add(options)
-Adds a slide with the following options map:
-	{
-		showImmediately: true,
-
-	}
 
 ###Content
-####Content.search(q, call_back_var, count, media_types)
-# TODO: Make this an options dict and have call_back_func too
-Searches Bing for content matching the query string. Types is a "+" seperated list of the following content types:
-"web+image+video"
-Count is the amount of elements from each content type in the final array.
-Because this is an asynchronous call, the variable name supplied in callback_var is assigned the content
-when it's arrived. If this is undefined, you can still find the content at Content.lastRecieved
+Allows you to find content from the internet (currently searches bing).
+####Content.search(q, options)
+q is the search query
+				var defaults = {
+					call_back_var: undefined,  // sets the variable reffered to by this string to the results
+					call_back_fn: undefined,   // calls the function referred to by this stirng with the results
+					count: 5,	// results from each media_type
+					media_types: "web+image+video"
+				};
 
 ####Content.lastReceived
-Array of the last recieved bing data.
+Array of the last recieved data.

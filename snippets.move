@@ -14,9 +14,8 @@
 	s.cancel()
 
 ## Slide Creation
-Content.search("Kittens", "kittens", 3, "image")
-Content.search("Puppies", "puppies", 3, "video")
-Content.search("Philip Bjorge", "me", 3, "web")
+quick_add = ^(e){Server.add_slide({content: e})}
+Content.search("Kittens", {call_back_fn: "quick_add", count: 3})
 
-pieces = [["<h1>Kittens</h1>", kittens], ["<h1>Puppies</h1>", puppies], ["<h1>ME</h1>", me]]
-just_added = pieces.map ^(v){Slides.add({content: v})}
+quick_add = ^(e){Slides.add({content: e})}
+Content.search("Kittens", {call_back_fn: "quick_add", count: 3})

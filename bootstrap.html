@@ -1,0 +1,13 @@
+<script>
+(function() {
+	// Bootstrapping our index files because otherwise
+	// sharejs freaks out. Bootstrapping is also cool.
+	// This means that every 
+	var connect = require('connect');
+	global.server  = connect(connect.logger(), connect.static(process.cwd()));
+	global.app     = global.server.listen(0);
+	var index   = "http://127.0.0.1:" + global.app.address().port;
+	console.log("Started up Turbo Impress on " + index);
+	window.location = index;
+})();
+</script>
