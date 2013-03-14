@@ -19,4 +19,3 @@ quick_add = ^(e){window.Presentation.slides.create({content: e})}
 Content.search("Kittens", {call_back_fn: "quick_add", count: 3})
 Content.search("Dogs", {call_back_fn: "quick_add", count: 3})
 Content.search("Monkeys", {call_back_fn: "quick_add", count: 3})
-Content.search("Hotties", {call_back_fn: "quick_add", count: 3})
