@@ -2,7 +2,7 @@
     // networking start is user initiated
     $("#networking-launch").click(function() {
         var sjs = require('share').server;
-        var presenter = $("#isPresenter").attr('checked') === "checked";
+        presenter = $("#isPresenter").attr('checked') === "checked";
         var server_param = "http://127.0.0.1:" + global.app.address().port;
 
         if (presenter) {
@@ -27,8 +27,8 @@
 
             slides_sd.on('insert', Presentation.slides._insert);
             slides_sd.on('delete', Presentation.slides._delete);
-            slides_sd.on('replace', Presentation.slides._replace);
             slides_sd.on('move', Presentation.slides._move);
+            // slides_sd.on('child op', Presentation.slides._child_op); (Turning this on breaks the _current subdoc events)
 
             _current_sd.on('insert', Presentation._current._insert);
             _current_sd.on('delete', Presentation._current._delete);

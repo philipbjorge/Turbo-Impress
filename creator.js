@@ -37,15 +37,39 @@ var creator_init = {
 
 	remote: function() {
 		remote = {
-			active: function() { return window.impress.jmpress('active'); },
-			home: function() { return window.impress.jmpress('home'); },
-			end: function() { return window.impress.jmpress('end'); },
-			next: function() { return window.impress.jmpress('next'); },
-			prev: function() { return window.impress.jmpress('prev'); },
-			goto: function(a) { 
+			current: function() { return window.impress.jmpress('active')[0].id; },
+			home: function() {
+				window.impress.jmpress('home');
+				if (presenter) Presentation.current(this.current(), true);
+			},
+			end: function() {
+				window.impress.jmpress('end');
+				if (presenter) Presentation.current(this.current(), true);
+			},
+			next: function() {
+				window.impress.jmpress('next');
+				if (presenter) Presentation.current(this.current(), true);
+			},
+			prev: function() {
+				window.impress.jmpress('prev');
+				if (presenter) Presentation.current(this.current(), true);
+			},
+			goto: function(a, dont_go) {
+				if (a === "") return;
 				if (typeof(a) === "number") { a = window.slides[a%window.slides.length]; }
+				if (typeof(a) === "string" && a[0] != "#") a = "#" + a;
 				// TODO: Check for instance of Slide
-				return window.impress.jmpress('goTo', a, "jump"); 
+				window.impress.jmpress('goTo', a, "jump");
+				if (presenter && dont_go !== true) Presentation.current(this.current(), true);
+			},
+			_autopilot: true,
+			autopilot: function(b) {
+				if (presenter)
+					return true;
+				if (b === undefined)
+					return remote._autopilot;
+				remote._autopilot = b;
+				return remote._autopilot;
 			},
 			cancelTimers: function() { for(var i = 0; i < global.timers.length; i++) { global.timers[i].stop(); } global.timers = []; }
 		};
