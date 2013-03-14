@@ -1,0 +1,8 @@
+# taken from express.js
+.git*
+docs/
+examples/
+support/
+test/
+testing.js
+.DS_Store
