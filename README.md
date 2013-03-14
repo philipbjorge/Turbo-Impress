@@ -19,7 +19,7 @@ Follow the [instructions](https://github.com/rogerwang/node-webkit/wiki/How-to-r
 ##Abstractions
 ###Presentation
 This is the main abstraction/data structure that is synchronized between the clients and server.
-####Presentation.slides [<Slide>,...]
+####Presentation.slides [Slide,...]
 #####Presentation.slides.mv()
 Move a slide from --> to in the presentation order (and positionally?).
 #####Presentation.slides.rm()
@@ -28,7 +28,7 @@ Removes a slide from the presentation. Deleting the slide you're on takes you to
 Adds a slide to the presentation.
 
 ####Presentation.current()
-####Presentation.current(<Slide>)
+####Presentation.current(Slide)
 Currently unspecified and only partially implemented.
 
 	Presentation.current(); # returns the #id of the main presenter's slide.
@@ -38,14 +38,14 @@ Currently unspecified and only partially implemented.
 Moves the presenter to the next slide (by index in the Slides array).
 ####Presentation.prev()
 Moves the presenter to the previous slide (by index in the Slides array).
-####Presentation.goto(<Slide>)
+####Presentation.goto(Slide)
 Moves the presenter to a specified slide.
 
 
 ###Remote
 This abstraction is used to control the current user's slide. An editor might want to be on a different slide than the presenter (e.g. to create the next slide).
 
-####Remote.autopilot(<Bool>)
+####Remote.autopilot(Bool)
 Sets the autopilot on (true) or off (false). When autopilot is set to true, you move through the slideshow in sync with the presenter. When autopilot is false, you have to move yourself.
 
 ####Remote.next()
@@ -54,7 +54,7 @@ Transitions to the next slide in the deck.
 ####Remote.prev()
 Transitions to the previous slide in the deck.
 
-####Remote.goto(<Slide>)
+####Remote.goto(Slide)
 Transitions to the supplied Slide in the deck.
 
 ####Remote.current()
