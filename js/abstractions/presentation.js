@@ -9,33 +9,78 @@ var Presentation = {
          */
 	sjs: undefined,
 	slides: $.extend([], {
-		add: function(position, slide) {
+		/*
+			Creates an empty slide.
+
+			If given a position it puts the given slide at the index.
+			If given no position, it appends.
+			
+			Takes a slide name for a blank slide or a Slide initialization object.
+		 */
+		create: function(slide, position) {
 			if (position === undefined)
-				position = this.length;
-			this._insert(position, slide);
+				position = Presentation.slides.length;
+			if (typeof(slide) === "string")
+				slide = {name: slide};
+
+			Presentation.sjs.at("slides").insert(position, slide, function(err, doc) {
+				// Only add this to our structure on success
+				if (!err)
+					Presentation.slides._insert(position, slide);
+				else
+					console.log(err);
+			});
 		},
-		rm: function() {},
-		move: function() {},
+		/*
+			Remove at a position or a slide id depending
+			on whether given an int or string.
+		 */
+		remove: function(slide) {
+			slide = str_to_slide_idx(slide);
+
+			Presentation.sjs.at(["slides", slide]).remove(function(err, doc) {
+				if (!err)
+					Presentation.slides._delete(slide, {});
+				else
+					console.log(err);
+			});
+		},
+		/*
+			Moves slide from to position slide to.
+			These can be either strings or integers.
+		 */
+		move: function(from, to) {
+			from = str_to_slide_idx(from);
+			to = str_to_slide_idx(to);
+			if (from == -1 || to == -1) return;
+
+			Presentation.sjs.at("slides").move(from, to, function(err, doc) {
+				if (!err)
+					Presentation.slides._move(from, to);
+				else
+					console.log(err);
+			});
+		},
 		_insert: function(position, data) {
-			this.splice(position, 0, new Slide(data));
+			Presentation.slides.splice(position, 0, new Slide(data));
 			Presentation._redraw();
 		},
 		_delete: function(position, data) {
-			this.splice(position, 1);
+			Presentation.slides.splice(position, 1);
 			Presentation._redraw();
 		},
 		_replace: function(position, was, now) {
-			this[position] = now;
-			this[position]._redraw();
+			Presentation.slides[position] = now;
+			Presentation.slides[position]._redraw();
 		},
 		_move: function(from, to) {
-                        if (to >= this.length) {
-                                var k = to - this.length;
-                                while ((k--) + 1) {
-                                        this.push(undefined);
-                                }
-                        }
-                        this.splice(to, 0, this.splice(from, 1)[0]);
+			if (to >= Presentation.slides.length) {
+				var k = to - Presentation.slides.length;
+				while ((k--) + 1) {
+					Presentation.slides.push(undefined);
+				}
+			}
+			Presentation.slides.splice(to, 0, Presentation.slides.splice(from, 1)[0]);
 			Presentation._redraw();
 		}
 	}),
@@ -60,9 +105,22 @@ var Presentation = {
 			return Presentation._current.__data;
 
 		if (new_current != Presentation._current.__data) {
-			Presentation.sjs.at("_current").del(0, Presentation.current().length);
-			Presentation.sjs.at("_current").insert(0, new_current);
-			Presentation._current.__data = new_current;
+			Presentation.sjs.at("_current").del(0, Presentation.current().length, function(err, doc) {
+				if (!err) {
+					var before = Presentation._current.__data;
+					Presentation._current.__data = "";
+					Presentation.sjs.at("_current").insert(0, new_current, function(err, doc) {
+						if (!err) {
+							Presentation._current.__data = new_current;
+						} else {
+							Presentation._current.__data = before;
+							console.log(err);
+						}
+					});
+				} else {
+					console.log(err);
+				}
+			});
 		}
 		return new_current;
 	},
