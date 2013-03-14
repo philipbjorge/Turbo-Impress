@@ -1,3 +1,4 @@
+var Remote = window.remote;
 var Presentation = {
 	sjs: undefined,	// the sharejs object after we've connected
 	slides: $.extend([], {
@@ -31,8 +32,10 @@ var Presentation = {
 			on whether given an int or string.
 		 */
 		remove: function(slide) {
-			slide = str_to_slide_idx(slide);
+			if (Presentation.slides.length == 1)
+				return;
 
+			slide = str_to_slide_idx(slide);
 			Presentation.sjs.at(["slides", slide]).remove(function(err, doc) {
 				if (!err)
 					Presentation.slides._delete(slide, {});
@@ -59,8 +62,22 @@ var Presentation = {
 		_insert: function(position, data) {
 			Presentation.slides.splice(position, 0, new Slide(data));
 			Presentation._redraw("insert_slide", Presentation.slides[position]);
+			// Remove the initializer slide on the first add.
+			if ($("#start").length > 0 && first_insert) {
+				first_insert = false;
+				var r = $("#start");
+				Remote.next();
+				$('#impress').jmpress('deinit', r);
+				r.remove();
+			}
 		},
 		_delete: function(position, data) {
+			// Move whoever recieves the delete message forward if it's the
+			// current slide.
+			if (Presentation.slides[position]+"" === Presentation.current() ||
+				Presentation.slides[position]+"" === Remote.current())
+				Remote.next();
+
 			var id = "#" + Presentation.slides[position].name;
 			Presentation.slides.splice(position, 1);
 			Presentation._redraw("delete_slide", id);

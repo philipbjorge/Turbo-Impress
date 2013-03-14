@@ -7,7 +7,7 @@ function Slide(constructor_vars) {
     this.name = constructor_vars.name;
 
     this.toString = function() {
-        return "#" + this.name;
+        return this.name;
     };
 
     this._redraw = function() {

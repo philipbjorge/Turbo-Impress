@@ -20,7 +20,7 @@ This is the main abstraction/data structure that is synchronized between the cli
 #####Presentation.slides.mv()
 Move a slide from --> to in the presentation order (and positionally?).
 #####Presentation.slides.rm()
-Removes a slide from the presentation.
+Removes a slide from the presentation. Deleting the slide you're on takes you to the next slide. Can't delete the last slide.
 ####Slides.add(options)
 Adds a slide to the presentation.
 

@@ -36,7 +36,7 @@ var creator_init = {
 	},
 
 	remote: function() {
-		remote = {
+		Remote = remote = {
 			current: function() { return window.impress.jmpress('active')[0].id; },
 			home: function() {
 				window.impress.jmpress('home');
