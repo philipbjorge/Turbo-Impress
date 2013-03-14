@@ -3,9 +3,10 @@
 A development environment / DSL for creating presentations on the fly.
 
 ![Screenshot](https://raw.github.com/philipbjorge/Turbo-Impress/master/img/screen.png)
+###[Video](http://youtu.be/eIIZw6uCxhc)
 
 ##Status:
-  * 3/13/2013 - Large portions of slide synchronization are in place - just need to synchronize a slide's content.
+  * 3/13/2013 - Large portions of slide synchronization are in place - just need to synchronize a slide's content - [YouTube](http://youtu.be/eIIZw6uCxhc)
   * 3/13/2013 - Finally got sharejs partially implemented for the presentation data structure. The current slide string is kept synchronized. Major refactoring with a bit more to go. Added a logo.
   * 3/7/2013 - Clean embedding of Movelang, a repl, and Ace Editor - [YouTube](http://youtu.be/o3W3k301cqw)
   * 3/6/2013 - Functional node-webkit project with impress.js and ui.layout
